@@ -20,4 +20,15 @@ app.get("/books", async (request, response) => {
   response.status(200).json(allbooks);
 });
 
+app.post("/books", async (request, response) => {
+  try {
+    const newBook = await Book.create(request.body);
+    response.status(200).json(newBook);
+  } catch (error) {
+    response
+      .status(500)
+      .json({ error: "Error creating book", details: error.message });
+  }
+});
+
 app.listen(PORT, () => console.log(`app is running on port ${PORT}`));
