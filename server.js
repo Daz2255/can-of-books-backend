@@ -12,7 +12,7 @@ const auth0 = require("auth0");
 const Book = require("./models/book");
 mongoose.connect(process.env.DATABASE_URL);
 
-const client = new auth0.WebAuth({
+const client = auth0.WebAuth({
   domain: process.env.AUTH0_DOMAIN,
   clientId: process.env.AUTH0_CLIENT_ID,
   clientSecret: process.env.AUTH0_CLIENT_SECRET,
