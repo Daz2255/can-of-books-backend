@@ -25,46 +25,25 @@ app.get("/", (request, response) => {
 });
 
 app.get("/books", async (request, response) => {
-  const allbooks = await Book.find(request.query);
-  response.status(200).json(allbooks);
-});
-
-app.post("/books", async (request, response) => {
-  try {
-    const newBook = await Book.create(request.body);
-    response
-      .status(201)
-      .json({ message: "New book successfully saved", book: newBook });
-  } catch (error) {
-    response
-      .status(500)
-      .json({ error: "Error creating book", details: error.message });
-  }
-});
-
-app.delete("/books/:id", async (request, response) => {
-  const bookId = request.params.id;
+  const email = request.query.email;
 
   try {
-    const deletedBook = await Book.findByIdAndDelete(bookId);
-    if (!deletedBook) {
-      return response.status(404).json({ error: "Book not found" });
-    }
-
-    response.status(200).json({ message: "Book deleted successfully" });
+    const allBooks = await Book.find({ email });
+    response.status(200).json(allBooks);
   } catch (error) {
-    response
-      .status(500)
-      .json({ error: "Error deleting book", details: error.message });
+    console.log(error);
+    response.status(500).json({ error: "Something went wrong" });
   }
 });
 
 app.put("/books/:id", async (request, response) => {
-  const bookId = request.params.id;
+  const id = request.params.id;
+  const email = request.query.email;
 
   try {
-    const updatedBook = await Book.findByIdAndUpdate(bookId, request.body, {
+    const updatedBook = await Book.findByIdAndUpdate(id, request.body, {
       new: true,
+      email,
     });
 
     if (!updatedBook) {
@@ -73,9 +52,26 @@ app.put("/books/:id", async (request, response) => {
 
     response.status(200).json(updatedBook);
   } catch (error) {
-    response
-      .status(500)
-      .json({ error: "Error updating book", details: error.message });
+    console.log(error);
+    response.status(500).json({ error: "Something went wrong" });
+  }
+});
+
+app.delete("/books/:id", async (request, response) => {
+  const id = request.params.id;
+  const email = request.query.email;
+
+  try {
+    const deletedBook = await Book.findByIdAndDelete(id);
+
+    if (!deletedBook) {
+      return response.status(404).json({ error: "Book not found" });
+    }
+
+    response.status(200).json({ message: "Book deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    response.status(500).json({ error: "Something went wrong" });
   }
 });
 
