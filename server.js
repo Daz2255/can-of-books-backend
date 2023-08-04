@@ -7,9 +7,18 @@ const PORT = process.env.PORT || 8088;
 const app = express();
 app.use(cors());
 app.use(bp.json());
+const auth0 = require("auth0");
 
 const Book = require("./models/book");
 mongoose.connect(process.env.DATABASE_URL);
+
+const client = new auth0.WebAuth({
+  domain: process.env.AUTH0_DOMAIN,
+  clientId: process.env.AUTH0_CLIENT_ID,
+  clientSecret: process.env.AUTH0_CLIENT_SECRET,
+});
+
+app.use(auth0.authenticate(client));
 
 app.get("/", (request, response) => {
   response.status(200).json("Hey there");
