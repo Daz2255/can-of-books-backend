@@ -18,6 +18,19 @@ const auth0AuthenticationClient = new auth0.AuthenticationClient({
   clientSecret: process.env.AUTH0_CLIENT_SECRET,
 });
 
+const authenticate = (req, res, next) => {
+  const token = req.header("Authorization");
+  auth0AuthenticationClient.getProfile(token, (err, userInfo) => {
+    if (err) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    req.user = userInfo;
+    next();
+  });
+};
+
+app.use(authenticate);
+
 app.get("/", (request, response) => {
   response.status(200).json("Hey there");
 });
